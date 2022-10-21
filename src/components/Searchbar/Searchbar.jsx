@@ -1,5 +1,5 @@
 import { BsSearch } from 'react-icons/bs';
-import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 import styles from './Searchbar.module.css';
 
@@ -8,21 +8,15 @@ class Searchbar extends Component {
     input: '',
   };
 
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+  };
+
   handleInputChange = event => {
     this.setState({
       input: event.currentTarget.value.toLowerCase(),
     });
-  };
-  handleSubmit = event => {
-    event.preventDefault();
-
-    if (this.state.input.trim() === '') {
-      toast.error('Enter something');
-      return;
-    }
-
-    this.props.onSubmit(this.state.input);
-    this.reset();
   };
 
   reset = () => {
@@ -30,10 +24,23 @@ class Searchbar extends Component {
   };
 
   render() {
+    const { input } = this.state;
+    const { onSubmit, loading } = this.props;
     return (
       <header className={styles.Searchbar}>
-        <form className={styles.SearchForm} onSubmit={this.handleSubmit}>
-          <button type="submit" className={styles.SearchFormButton}>
+        <form
+          className={styles.SearchForm}
+          onSubmit={event => {
+            event.preventDefault();
+            onSubmit(input);
+            this.reset();
+          }}
+        >
+          <button
+            type="submit"
+            className={styles.SearchFormButton}
+            disabled={loading}
+          >
             <BsSearch />
 
             <span className={styles.SearchFormButtonLabel}>Search</span>
