@@ -8,14 +8,17 @@ export const fetchGallery = async (query, page) => {
   const response = await axios.get(
     `?q=${query}&page=${page}&key=${API_KEY}&${BASE_FILTERS}`
   );
-  const galleryItems = response.data.hits.map(image => {
-    const { id, largeImageURL, webformatURL, tags } = image;
-    return {
-      id,
-      largeImageURL,
-      webformatURL,
-      tags,
-    };
-  });
+  const galleryItems = {
+    gallery: response.data.hits.map(image => {
+      const { id, largeImageURL, webformatURL, tags } = image;
+      return {
+        id,
+        largeImageURL,
+        webformatURL,
+        tags,
+      };
+    }),
+    total: response.data.total,
+  };
   return galleryItems;
 };

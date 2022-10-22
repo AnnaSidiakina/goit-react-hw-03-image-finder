@@ -16,6 +16,7 @@ export default class App extends Component {
     error: null,
     loading: false,
     currentLargeImage: '',
+    total: null,
   };
 
   onModalOpen = largeImageURL => {
@@ -45,10 +46,12 @@ export default class App extends Component {
   addImageGallery = async (query, page) => {
     try {
       this.setState({ loading: true });
-      const gallery = await API.fetchGallery(query, page);
+      const gallery = await (await API.fetchGallery(query, page)).gallery;
+      const total = await (await API.fetchGallery(query, page)).total;
       this.setState(prevState => ({
         gallery: [...prevState.gallery, ...gallery],
         loading: false,
+        total: total,
       }));
       if (gallery.length === 0) {
         toast.error(
@@ -72,7 +75,8 @@ export default class App extends Component {
   }
 
   render() {
-    const { gallery, loading, error, currentLargeImage } = this.state;
+    const { gallery, loading, error, currentLargeImage, total, page } =
+      this.state;
     return (
       <div>
         <Searchbar onSubmit={this.formSubmitHandler} loading={loading} />
@@ -82,7 +86,7 @@ export default class App extends Component {
           <ImageGallery galleryItems={gallery} onClick={this.onModalOpen} />
         )}
         <ToastContainer autoClose={3000} />
-        {gallery.length > 0 && (
+        {gallery.length > 0 && total / page > 12 && (
           <LoadMoreButton
             onLoadMore={this.onLoadMoreButton}
             isLoading={loading}
