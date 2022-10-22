@@ -16,11 +16,11 @@ const ImageGalleryItem = ({ galleryItem, onClick }) => {
 };
 
 ImageGalleryItem.propTypes = {
-  galleryItem: PropTypes.exact({
-    id: PropTypes.number,
-    webformatURL: PropTypes.string,
-    tags: PropTypes.string,
-    largeImageURL: PropTypes.string,
+  galleryItem: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    webformatURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
   }),
   onClick: PropTypes.func.isRequired,
 };
